@@ -18,7 +18,7 @@ loadData().then(() => {
 });
 ;
 
-const botToken = '7235293038:AAG9RdOV0AXcXxn32wY62njSc6wbPayjOvA';
+const botToken = '8116637783:AAHPP3YbcZ2h2NqsmX2M-R6SvIYvXPfDulw';
 const bot = new TelegramBot(botToken, { polling: true });
 
 // باقي إعدادات البوت والتطبيق
@@ -48,7 +48,7 @@ function initializeDefaultData() {
 const MAX_FREE_ATTEMPTS = 5;
 const freeTrialEndedMessage = "انتهت فترة التجربة المجانيه لان تستطيع استخدام اي رابط اختراق حتى تقوم بل الاشتراك من المطور او قوم بجمع نقاط لاستمرار في استخدام البوت";
 
-const forcedChannelUsernames = ['@SJGDDW', '@YEMENCYBER101', '@YYY_A12'];
+const forcedChannelUsernames = ['@SJGDDW', '@SJGDDW', '@SJGDDW'];
 
 
 // دالة للتحقق من المسؤول
